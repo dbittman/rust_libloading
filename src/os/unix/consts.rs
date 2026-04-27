@@ -52,9 +52,10 @@ mod posix {
     pub(super) const RTLD_LOCAL: c_int = !0;
 }
 
-#[cfg(any(not(libloading_docs), unix))]
+#[cfg(any(not(libloading_docs), unix, target_os = "twizzler"))]
 mod posix {
     use cfg_if::cfg_if;
+
     use super::c_int;
     cfg_if! {
         if #[cfg(target_os = "haiku")] {
@@ -88,6 +89,7 @@ mod posix {
             target_os = "nto",
             target_os = "hurd",
             target_os = "cygwin",
+            target_os = "twizzler",
         ))] {
             pub(super) const RTLD_LAZY: c_int = 1;
         } else {
@@ -128,6 +130,7 @@ mod posix {
             target_os = "nto",
             target_os = "hurd",
             target_os = "cygwin",
+            target_os = "twizzler",
         ))] {
             pub(super) const RTLD_NOW: c_int = 2;
         } else if #[cfg(all(target_os = "android",target_pointer_width = "32"))] {
@@ -181,6 +184,7 @@ mod posix {
             target_os = "redox",
             target_os = "nto",
             target_os = "hurd",
+            target_os = "twizzler",
         ))] {
             pub(super) const RTLD_GLOBAL: c_int = 0x100;
         } else {
@@ -227,6 +231,7 @@ mod posix {
             target_os = "redox",
             target_os = "hurd",
             target_os = "cygwin",
+            target_os = "twizzler",
         ))] {
             pub(super) const RTLD_LOCAL: c_int = 0;
         } else {

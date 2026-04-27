@@ -17,7 +17,7 @@
 //! ```
 
 /// UNIX implementation of dynamic library loading.
-#[cfg(any(unix, libloading_docs))]
+#[cfg(any(unix, libloading_docs, target_os = "twizzler"))]
 #[cfg_attr(libloading_docs, doc(cfg(unix)))]
 pub mod unix;
 

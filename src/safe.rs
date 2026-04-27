@@ -1,3 +1,7 @@
+use core::{fmt, marker, ops};
+
+#[cfg(all(not(libloading_docs), target_os = "twizzler"))]
+use super::os::twizzler as imp;
 #[cfg(libloading_docs)]
 use super::os::unix as imp; // the implementation used here doesn't matter particularly much...
 #[cfg(all(not(libloading_docs), unix))]
@@ -5,11 +9,7 @@ use super::os::unix as imp;
 #[cfg(all(not(libloading_docs), windows))]
 use super::os::windows as imp;
 use super::Error;
-use crate::as_filename::AsFilename;
-use crate::as_symbol_name::AsSymbolName;
-use core::fmt;
-use core::marker;
-use core::ops;
+use crate::{as_filename::AsFilename, as_symbol_name::AsSymbolName};
 
 /// A loaded dynamic library.
 #[cfg_attr(libloading_docs, doc(cfg(any(unix, windows))))]
@@ -27,9 +27,9 @@ impl Library {
     /// # Safety
     ///
     /// When a library is loaded, initialisation routines contained within it are executed.
-    /// For the purposes of safety, the execution of these routines is conceptually the same calling an
-    /// unknown foreign function and may impose arbitrary requirements on the caller for the call
-    /// to be sound.
+    /// For the purposes of safety, the execution of these routines is conceptually the same calling
+    /// an unknown foreign function and may impose arbitrary requirements on the caller for the
+    /// call to be sound.
     ///
     /// Additionally, the callers of this function must also ensure that execution of the
     /// termination routines contained within the library is safe as well. These routines may be
@@ -48,13 +48,13 @@ impl Library {
     ///
     /// # Platform-specific behaviour
     ///
-    /// When a plain library filename is supplied, the locations in which the library is searched are
-    /// platform specific and cannot be adjusted in a portable manner. See the documentation for
-    /// the platform specific [`os::unix::Library::new`] and [`os::windows::Library::new`] methods
-    /// for further information on library lookup behaviour.
+    /// When a plain library filename is supplied, the locations in which the library is searched
+    /// are platform specific and cannot be adjusted in a portable manner. See the documentation
+    /// for the platform specific [`os::unix::Library::new`] and [`os::windows::Library::new`]
+    /// methods for further information on library lookup behaviour.
     ///
-    /// If the `filename` specifies a library filename without a path and with the extension omitted,
-    /// the `.dll` extension is implicitly added on Windows.
+    /// If the `filename` specifies a library filename without a path and with the extension
+    /// omitted, the `.dll` extension is implicitly added on Windows.
     ///
     /// [`os::unix::Library::new`]: crate::os::unix::Library::new
     /// [`os::windows::Library::new`]: crate::os::windows::Library::new
@@ -87,11 +87,11 @@ impl Library {
 
     /// Get a pointer to a function or static variable by symbol name.
     ///
-    /// The `symbol` may not contain any null bytes, with the exception of the last byte. Providing a
-    /// null-terminated `symbol` may help to avoid an allocation.
+    /// The `symbol` may not contain any null bytes, with the exception of the last byte. Providing
+    /// a null-terminated `symbol` may help to avoid an allocation.
     ///
-    /// The symbol is interpreted as-is; no mangling is done. This means that symbols like `x::y` are
-    /// most likely invalid.
+    /// The symbol is interpreted as-is; no mangling is done. This means that symbols like `x::y`
+    /// are most likely invalid.
     ///
     /// # Safety
     ///
@@ -116,9 +116,7 @@ impl Library {
     ///
     /// ```no_run
     /// # use ::libloading::Library;
-    /// let lib = unsafe {
-    ///     Library::new("/path/to/awesome.module").unwrap()
-    /// };
+    /// let lib = unsafe { Library::new("/path/to/awesome.module").unwrap() };
     /// ```
     ///
     /// Loading and using a function looks like this:

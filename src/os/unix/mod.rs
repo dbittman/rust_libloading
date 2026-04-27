@@ -1,10 +1,7 @@
+use core::{ffi::CStr, fmt, marker, mem, ptr, ptr::null};
+
 pub use self::consts::*;
-use crate::as_filename::AsFilename;
-use crate::as_symbol_name::AsSymbolName;
-use crate::util::ensure_compatible_types;
-use core::ffi::CStr;
-use core::ptr::null;
-use core::{fmt, marker, mem, ptr};
+use crate::{as_filename::AsFilename, as_symbol_name::AsSymbolName, util::ensure_compatible_types};
 
 mod consts;
 
@@ -115,9 +112,9 @@ impl Library {
     /// # Safety
     ///
     /// When a library is loaded, initialisation routines contained within the library are executed.
-    /// For the purposes of safety, the execution of these routines is conceptually the same calling an
-    /// unknown foreign function and may impose arbitrary requirements on the caller for the call
-    /// to be sound.
+    /// For the purposes of safety, the execution of these routines is conceptually the same calling
+    /// an unknown foreign function and may impose arbitrary requirements on the caller for the
+    /// call to be sound.
     ///
     /// Additionally, the callers of this function must also ensure that execution of the
     /// termination routines contained within the library is safe as well. These routines may be
@@ -162,9 +159,9 @@ impl Library {
     /// # Safety
     ///
     /// When a library is loaded, initialisation routines contained within the library are executed.
-    /// For the purposes of safety, the execution of these routines is conceptually the same calling an
-    /// unknown foreign function and may impose arbitrary requirements on the caller for the call
-    /// to be sound.
+    /// For the purposes of safety, the execution of these routines is conceptually the same calling
+    /// an unknown foreign function and may impose arbitrary requirements on the caller for the
+    /// call to be sound.
     ///
     /// Additionally, the callers of this function must also ensure that execution of the
     /// termination routines contained within the library is safe as well. These routines may be
@@ -182,8 +179,8 @@ impl Library {
         filename.posix_filename(|posix_filename| Library::open_char_ptr(posix_filename, flags))
     }
 
-    /// private helper to call dlopen+dlerror once we de-tangled the string into a raw pointer to a 0 terminated utf-8 string.
-    /// caller must ensure that the string is actually 0 terminated.
+    /// private helper to call dlopen+dlerror once we de-tangled the string into a raw pointer to a
+    /// 0 terminated utf-8 string. caller must ensure that the string is actually 0 terminated.
     unsafe fn open_char_ptr(
         filename: *const core::ffi::c_char,
         flags: core::ffi::c_int,
@@ -249,8 +246,8 @@ impl Library {
 
     /// Get a pointer to a function or static variable by symbol name.
     ///
-    /// The `symbol` may not contain any null bytes, with the exception of the last byte. Providing a
-    /// null terminated `symbol` may help to avoid an allocation.
+    /// The `symbol` may not contain any null bytes, with the exception of the last byte. Providing
+    /// a null terminated `symbol` may help to avoid an allocation.
     ///
     /// Symbol is interpreted as-is; no mangling is done. This means that symbols like `x::y` are
     /// most likely invalid.
@@ -288,6 +285,7 @@ impl Library {
                 target_os = "redox",
                 target_os = "fuchsia",
                 target_os = "cygwin",
+                target_os = "twizzler",
             ))] {
                 self.get_singlethreaded(symbol)
             } else {
@@ -298,8 +296,8 @@ impl Library {
 
     /// Get a pointer to function or static variable by symbol name.
     ///
-    /// The `symbol` may not contain any null bytes, with the exception of the last byte. Providing a
-    /// null terminated `symbol` may help to avoid an allocation.
+    /// The `symbol` may not contain any null bytes, with the exception of the last byte. Providing
+    /// a null terminated `symbol` may help to avoid an allocation.
     ///
     /// Symbol is interpreted as-is; no mangling is done. This means that symbols like `x::y` are
     /// most likely invalid.
@@ -479,7 +477,10 @@ impl<T> fmt::Debug for Symbol<T> {
 }
 
 // Platform specific things
-#[cfg_attr(any(target_os = "linux", target_os = "android"), link(name = "dl"))]
+#[cfg_attr(
+    any(target_os = "linux", target_os = "android", target_os = "twizzler"),
+    link(name = "dl")
+)]
 #[cfg_attr(any(target_os = "freebsd", target_os = "dragonfly"), link(name = "c"))]
 extern "C" {
     fn dlopen(

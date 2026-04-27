@@ -1,5 +1,6 @@
-use crate::Error;
 use alloc::string::String;
+
+use crate::Error;
 
 pub(crate) trait Sealed {
     #[cfg(windows)]
@@ -9,7 +10,7 @@ pub(crate) trait Sealed {
         function: impl FnOnce(*const u16) -> Result<R, crate::Error>,
     ) -> Result<R, crate::Error>;
 
-    #[cfg(unix)]
+    #[cfg(any(unix, target_os = "twizzler"))]
     #[doc(hidden)]
     fn posix_filename<R>(
         self,
@@ -39,7 +40,7 @@ impl Sealed for &str {
         function(utf16.as_ptr())
     }
 
-    #[cfg(unix)]
+    #[cfg(any(unix, target_os = "twizzler"))]
     fn posix_filename<R>(
         self,
         function: impl FnOnce(*const core::ffi::c_char) -> Result<R, Error>,
@@ -63,7 +64,7 @@ impl Sealed for &String {
         self.as_str().windows_filename(function)
     }
 
-    #[cfg(unix)]
+    #[cfg(any(unix, target_os = "twizzler"))]
     fn posix_filename<R>(
         self,
         function: impl FnOnce(*const core::ffi::c_char) -> Result<R, Error>,
@@ -82,7 +83,7 @@ impl Sealed for String {
         self.as_str().windows_filename(function)
     }
 
-    #[cfg(unix)]
+    #[cfg(any(unix, target_os = "twizzler"))]
     fn posix_filename<R>(
         mut self,
         function: impl FnOnce(*const core::ffi::c_char) -> Result<R, Error>,
@@ -99,9 +100,10 @@ impl Sealed for String {
 #[cfg(feature = "std")]
 #[cfg_attr(libloading_docs, doc(cfg(feature = "std")))]
 mod std {
-    use super::{Sealed, AsFilename};
-    use crate::Error;
     use std::ffi::{OsStr, OsString};
+
+    use super::{AsFilename, Sealed};
+    use crate::Error;
 
     impl AsFilename for &OsStr {}
     impl Sealed for &OsStr {
@@ -120,7 +122,7 @@ mod std {
             function(utf16.as_ptr())
         }
 
-        #[cfg(unix)]
+        #[cfg(any(unix, target_os = "twizzler"))]
         fn posix_filename<R>(
             self,
             function: impl FnOnce(*const core::ffi::c_char) -> Result<R, Error>,
@@ -145,7 +147,7 @@ mod std {
             self.as_os_str().windows_filename(function)
         }
 
-        #[cfg(unix)]
+        #[cfg(any(unix, target_os = "twizzler"))]
         fn posix_filename<R>(
             self,
             function: impl FnOnce(*const core::ffi::c_char) -> Result<R, Error>,
@@ -168,7 +170,7 @@ mod std {
             self.as_os_str().windows_filename(function)
         }
 
-        #[cfg(unix)]
+        #[cfg(any(unix, target_os = "twizzler"))]
         fn posix_filename<R>(
             self,
             function: impl FnOnce(*const core::ffi::c_char) -> Result<R, Error>,
@@ -193,7 +195,7 @@ mod std {
             self.into_os_string().windows_filename(function)
         }
 
-        #[cfg(unix)]
+        #[cfg(any(unix, target_os = "twizzler"))]
         fn posix_filename<R>(
             self,
             function: impl FnOnce(*const core::ffi::c_char) -> Result<R, Error>,
@@ -212,7 +214,7 @@ mod std {
             self.as_os_str().windows_filename(function)
         }
 
-        #[cfg(unix)]
+        #[cfg(any(unix, target_os = "twizzler"))]
         fn posix_filename<R>(
             self,
             function: impl FnOnce(*const core::ffi::c_char) -> Result<R, Error>,
@@ -231,7 +233,7 @@ mod std {
             self.as_os_str().windows_filename(function)
         }
 
-        #[cfg(unix)]
+        #[cfg(any(unix, target_os = "twizzler"))]
         fn posix_filename<R>(
             self,
             function: impl FnOnce(*const core::ffi::c_char) -> Result<R, Error>,

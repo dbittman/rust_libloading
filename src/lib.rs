@@ -1,4 +1,5 @@
-//! Bindings around the platform's dynamic library loading primitives with greatly improved memory safety.
+//! Bindings around the platform's dynamic library loading primitives with greatly improved memory
+//! safety.
 //!
 //! Using this library allows the loading of [dynamic libraries](struct.Library.html), also known as
 //! shared libraries, and the use of the functions and static variables they contain.
@@ -33,8 +34,8 @@
 //! }
 //! ```
 //!
-//! The compiler will ensure that the loaded function will not outlive the `Library` from which it comes,
-//! preventing the most common memory-safety issues.
+//! The compiler will ensure that the loaded function will not outlive the `Library` from which it
+//! comes, preventing the most common memory-safety issues.
 #![cfg_attr(
     any(unix, windows),
     deny(missing_docs, clippy::all, unreachable_pub, unused)
@@ -55,13 +56,12 @@ pub use as_symbol_name::AsSymbolName;
 pub mod changelog;
 mod error;
 pub mod os;
-#[cfg(any(unix, windows, libloading_docs))]
+#[cfg(any(unix, windows, libloading_docs, target_os = "twizzler"))]
 mod safe;
 mod util;
 
 pub use self::error::Error;
-
-#[cfg(any(unix, windows, libloading_docs))]
+#[cfg(any(unix, windows, libloading_docs, target_os = "twizzler"))]
 pub use self::safe::{Library, Symbol};
 
 /// Converts a library name to a filename generally appropriate for use on the system.
@@ -74,12 +74,10 @@ pub use self::safe::{Library, Symbol};
 /// It can be used to load global libraries in a platform independent manner:
 ///
 /// ```
-/// use libloading::{Library, library_filename};
+/// use libloading::{library_filename, Library};
 /// // Will attempt to load `libLLVM.so` on Linux, `libLLVM.dylib` on macOS and `LLVM.dll` on
 /// // Windows.
-/// let library = unsafe {
-///     Library::new(library_filename("LLVM"))
-/// };
+/// let library = unsafe { Library::new(library_filename("LLVM")) };
 /// ```
 #[cfg(feature = "std")]
 #[cfg_attr(libloading_docs, doc(cfg(feature = "std")))]
