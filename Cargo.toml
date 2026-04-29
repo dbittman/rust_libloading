@@ -15,7 +15,14 @@ categories = ["api-bindings"]
 rust-version = "1.88.0"
 edition = "2021"
 autotests = false
-include = ["Cargo.toml", "LICENSE", "README.mkd", "src/**/*.rs", "tests/**/*.rs", "tests/ordinals.def"]
+include = [
+    "Cargo.toml",
+    "LICENSE",
+    "README.mkd",
+    "src/**/*.rs",
+    "tests/**/*.rs",
+    "tests/ordinals.def",
+]
 
 [features]
 default = ["std"]
@@ -28,7 +35,7 @@ version = "0.2"
 version = "0.61"
 features = ["Win32_Foundation"]
 
-[target.'cfg(unix)'.dependencies.cfg-if]
+[target.'cfg(any(unix, target_os = "twizzler"))'.dependencies.cfg-if]
 version = "1"
 
 [dev-dependencies]

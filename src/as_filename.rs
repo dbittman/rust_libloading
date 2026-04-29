@@ -127,7 +127,10 @@ mod std {
             self,
             function: impl FnOnce(*const core::ffi::c_char) -> Result<R, Error>,
         ) -> Result<R, Error> {
+            #[cfg(unix)]
             let bytes = std::os::unix::ffi::OsStrExt::as_bytes(self);
+            #[cfg(target_os = "twizzler")]
+            let bytes = std::os::twizzler::ffi::OsStrExt::as_bytes(self);
             if crate::util::check_null_bytes(bytes)? {
                 function(bytes.as_ptr().cast())
             } else {
@@ -175,7 +178,10 @@ mod std {
             self,
             function: impl FnOnce(*const core::ffi::c_char) -> Result<R, Error>,
         ) -> Result<R, Error> {
+            #[cfg(unix)]
             let mut bytes = std::os::unix::ffi::OsStringExt::into_vec(self);
+            #[cfg(target_os = "twizzler")]
+            let mut bytes = std::os::twizzler::ffi::OsStringExt::into_vec(self);
             if crate::util::check_null_bytes(&bytes)? {
                 function(bytes.as_ptr().cast())
             } else {
