@@ -1,12 +1,15 @@
 extern crate libloading;
 #[cfg(feature = "std")]
 mod test {
-    use libloading::library_filename;
     use std::path::Path;
+
+    use libloading::library_filename;
 
     #[cfg(any(target_os = "windows", target_os = "cygwin"))]
     const EXPECTED: &str = "audioengine.dll";
     #[cfg(target_os = "linux")]
+    const EXPECTED: &str = "libaudioengine.so";
+    #[cfg(target_os = "twizzler")]
     const EXPECTED: &str = "libaudioengine.so";
     #[cfg(target_os = "macos")]
     const EXPECTED: &str = "libaudioengine.dylib";
