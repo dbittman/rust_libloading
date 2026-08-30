@@ -1,7 +1,5 @@
 use core::{fmt, marker, ops};
 
-#[cfg(all(not(libloading_docs), target_os = "twizzler"))]
-use super::os::unix as imp;
 #[cfg(libloading_docs)]
 use super::os::unix as imp; // the implementation used here doesn't matter particularly much...
 #[cfg(all(not(libloading_docs), unix))]

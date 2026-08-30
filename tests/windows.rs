@@ -1,8 +1,8 @@
 #![cfg(windows)]
 extern crate libloading;
+use std::{ffi::CStr, os::raw::c_void};
+
 use libloading::os::windows::*;
-use std::ffi::CStr;
-use std::os::raw::c_void;
 
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 fn load_ordinal_lib() -> Library {

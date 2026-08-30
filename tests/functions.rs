@@ -50,7 +50,8 @@ fn is_wine() -> bool {
 fn is_wine() -> bool {
     unsafe {
         //This detects wine, the linux runtime for windows programs.
-        //Wine exposes the symbol wine_get_version in ntdll.dll; naturally, this symbol is absent on actual windows.
+        //Wine exposes the symbol wine_get_version in ntdll.dll; naturally, this symbol is absent
+        // on actual windows.
         let lib = Library::new("ntdll.dll").expect("open library");
         let wine: Result<Symbol<extern "C" fn() -> i32>, _> = lib.get("wine_get_version");
         if wine.is_ok() {

@@ -14,11 +14,10 @@ mod windows_imports {
     windows_link::link!("kernel32.dll" "system" fn GetProcAddress(module: HMODULE, procname: *const u8) -> FARPROC);
 }
 
-use self::windows_imports::*;
-use crate::as_filename::AsFilename;
-use crate::as_symbol_name::AsSymbolName;
-use crate::util::ensure_compatible_types;
 use core::{fmt, marker, mem, ptr};
+
+use self::windows_imports::*;
+use crate::{as_filename::AsFilename, as_symbol_name::AsSymbolName, util::ensure_compatible_types};
 
 /// The platform-specific counterpart of the cross-platform [`Library`](crate::Library).
 pub struct Library(HMODULE);
@@ -32,8 +31,8 @@ unsafe impl Send for Library {}
 // being sent to an internal (to MS) general question mailing-list. The conclusion of the mail is
 // as such:
 //
-// * Nobody inside MS (at least out of all of the people who have seen the question) knows for
-//   sure either;
+// * Nobody inside MS (at least out of all of the people who have seen the question) knows for sure
+//   either;
 // * However, the general consensus between MS developers is that one can rely on the API being
 //   thread-safe. In case it is not thread-safe it should be considered a bug on the Windows
 //   part. (NB: bugs filed at https://connect.microsoft.com/ against Windows Server)
@@ -47,9 +46,9 @@ impl Library {
     /// path, the function uses a Windows-specific search strategy to find the module. For more
     /// information, see the [Remarks on MSDN][msdn].
     ///
-    /// If the `filename` specifies a library filename without a path and with the extension omitted,
-    /// the `.dll` extension is implicitly added. This behaviour may be suppressed by appending a
-    /// trailing `.` to the `filename`.
+    /// If the `filename` specifies a library filename without a path and with the extension
+    /// omitted, the `.dll` extension is implicitly added. This behaviour may be suppressed by
+    /// appending a trailing `.` to the `filename`.
     ///
     /// This is equivalent to <code>[Library::load_with_flags](filename, 0)</code>.
     ///
@@ -58,9 +57,9 @@ impl Library {
     /// # Safety
     ///
     /// When a library is loaded, initialisation routines contained within the library are executed.
-    /// For the purposes of safety, the execution of these routines is conceptually the same calling an
-    /// unknown foreign function and may impose arbitrary requirements on the caller for the call
-    /// to be sound.
+    /// For the purposes of safety, the execution of these routines is conceptually the same calling
+    /// an unknown foreign function and may impose arbitrary requirements on the caller for the
+    /// call to be sound.
     ///
     /// Additionally, the callers of this function must also ensure that execution of the
     /// termination routines contained within the library is safe as well. These routines may be
@@ -107,9 +106,9 @@ impl Library {
     /// modules corresponding to the `filename`, it is impossible to predict which module handle
     /// will be returned. For more information refer to [MSDN].
     ///
-    /// If the `filename` specifies a library filename without a path and with the extension omitted,
-    /// the `.dll` extension is implicitly added. This behaviour may be suppressed by appending a
-    /// trailing `.` to the `filename`.
+    /// If the `filename` specifies a library filename without a path and with the extension
+    /// omitted, the `.dll` extension is implicitly added. This behaviour may be suppressed by
+    /// appending a trailing `.` to the `filename`.
     ///
     /// This is equivalent to `GetModuleHandleExW(0, filename, _)`.
     ///
@@ -121,8 +120,9 @@ impl Library {
                 with_get_last_error(
                     |source| crate::Error::GetModuleHandleExW { source },
                     || {
-                        // Make sure no winapi calls as a result of drop happen inside this closure, because
-                        // otherwise that might change the return value of the GetLastError.
+                        // Make sure no winapi calls as a result of drop happen inside this closure,
+                        // because otherwise that might change the return
+                        // value of the GetLastError.
                         let result = GetModuleHandleExW(0, windows_filename, &mut handle);
                         if result == 0 {
                             None
@@ -148,9 +148,9 @@ impl Library {
     /// # Safety
     ///
     /// When a library is loaded, initialisation routines contained within the library are executed.
-    /// For the purposes of safety, the execution of these routines is conceptually the same calling an
-    /// unknown foreign function and may impose arbitrary requirements on the caller for the call
-    /// to be sound.
+    /// For the purposes of safety, the execution of these routines is conceptually the same calling
+    /// an unknown foreign function and may impose arbitrary requirements on the caller for the
+    /// call to be sound.
     ///
     /// Additionally, the callers of this function must also ensure that execution of the
     /// termination routines contained within the library is safe as well. These routines may be
@@ -164,8 +164,9 @@ impl Library {
             with_get_last_error(
                 |source| crate::Error::LoadLibraryExW { source },
                 || {
-                    // Make sure no winapi calls as a result of drop happen inside this closure, because
-                    // otherwise that might change the return value of the GetLastError.
+                    // Make sure no winapi calls as a result of drop happen inside this closure,
+                    // because otherwise that might change the return value of
+                    // the GetLastError.
                     let handle = LoadLibraryExW(windows_filename, 0, flags);
                     if handle == 0 {
                         None
@@ -185,7 +186,8 @@ impl Library {
     ///
     /// [msdn]: https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandleexw
     ///
-    /// If successful, the module will remain in memory regardless of the refcount for this `Library`
+    /// If successful, the module will remain in memory regardless of the refcount for this
+    /// `Library`
     pub fn pin(&self) -> Result<(), crate::Error> {
         const GET_MODULE_HANDLE_EX_FLAG_PIN: u32 = 0x1;
         const GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS: u32 = 0x4;
@@ -194,11 +196,13 @@ impl Library {
             with_get_last_error(
                 |source| crate::Error::GetModuleHandleExW { source },
                 || {
-                    // Make sure no winapi calls as a result of drop happen inside this closure, because
-                    // otherwise that might change the return value of the GetLastError.
+                    // Make sure no winapi calls as a result of drop happen inside this closure,
+                    // because otherwise that might change the return value of
+                    // the GetLastError.
 
-                    // We use our cached module handle of this `Library` instead of the module name. This works
-                    // if we also pass the flag `GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS` because on Windows, module handles
+                    // We use our cached module handle of this `Library` instead of the module name.
+                    // This works if we also pass the flag
+                    // `GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS` because on Windows, module handles
                     // are the loaded base address of the module.
                     let result = GetModuleHandleExW(
                         GET_MODULE_HANDLE_EX_FLAG_PIN | GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,

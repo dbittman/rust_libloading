@@ -1,7 +1,7 @@
-use crate::Error;
-use alloc::ffi::CString;
-use alloc::string::String;
+use alloc::{ffi::CString, string::String};
 use core::ffi::CStr;
+
+use crate::Error;
 
 pub(crate) trait Sealed {
     fn symbol_name<R>(

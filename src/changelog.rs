@@ -8,12 +8,12 @@
 /// * This release adds a `std` feature. Most functionality remains available with this feature
 ///   disabled, but anything involving `OsStr`, `OsString`, `Path` or `PathBuf` is only available
 ///   with `std` feature enabled. If you are depending on `libloading` with `no-default-features`
-///   set to true, you may see compilation errors. Running with `std` feature enabled is still
-///   the strongly recommended option. no-std functionality has been contributed in [#184];
-/// * As a result of the change above, functions that previously using `AsRef<OsStr>` to
-///   describe the library path now require an implementor of [`AsFilename`](crate::AsFilename)
-///   instead. `AsFilename` has been implemented for the most likely types used previously. Please
-///   file an issue if you rely on a type that no longer works.
+///   set to true, you may see compilation errors. Running with `std` feature enabled is still the
+///   strongly recommended option. no-std functionality has been contributed in [#184];
+/// * As a result of the change above, functions that previously using `AsRef<OsStr>` to describe
+///   the library path now require an implementor of [`AsFilename`](crate::AsFilename) instead.
+///   `AsFilename` has been implemented for the most likely types used previously. Please file an
+///   issue if you rely on a type that no longer works.
 /// * The `Error` enum's variants changed in incompatible ways. Furthermore it has been changed to
 ///   return the underlying dlerror via the `source` method (matching behaviour on Windows.)
 /// * On Windows providing filenames with interior null bytes to `Library::open` and related
@@ -31,7 +31,6 @@
 ///   accepted. This new functionality has been contributed in [#174] and [#184].
 ///
 /// [#174]: https://github.com/nagisa/rust_libloading/pull/174
-///
 pub mod r0_9_0 {}
 
 /// Release 0.8.9 (2025-09-17)
@@ -81,9 +80,9 @@ pub mod r0_8_3 {}
 /// ## Non-breaking changes
 ///
 /// * The crate switches the dependency on `windows-sys` to a `windows-target` one for Windows
-///   bindings. In order to enable this `libloading` defines any bindings necessary for its operation
-///   internally, just like has been done for `unix` targets. This should result in leaner dependency
-///   trees.
+///   bindings. In order to enable this `libloading` defines any bindings necessary for its
+///   operation internally, just like has been done for `unix` targets. This should result in leaner
+///   dependency trees.
 /// * `os::unix::with_dlerror` has been exposed for the users who need to invoke `dl*` family of
 ///   functions manually.
 pub mod r0_8_2 {}
@@ -256,8 +255,8 @@ pub mod r0_7_0 {}
 /// Release 0.6.7 (2021-01-14)
 ///
 /// * Added a [`os::windows::Library::open_already_loaded`] to obtain a handle to a library that
-///   must already be loaded. There is no portable equivalent for all UNIX targets. Users who do
-///   not care about portability across UNIX platforms may use [`os::unix::Library::open`] with
+///   must already be loaded. There is no portable equivalent for all UNIX targets. Users who do not
+///   care about portability across UNIX platforms may use [`os::unix::Library::open`] with
 ///   `libc::RTLD_NOLOAD`;
 ///
 /// [`os::windows::Library::open_already_loaded`]: crate::os::windows::Library::open_already_loaded
@@ -280,8 +279,8 @@ pub mod r0_6_5 {}
 
 /// Release 0.6.4 (2020-10-10)
 ///
-/// * Remove use of `build.rs` making it easier to build `libloading` without cargo. It also
-///   almost halves the build time of this crate.
+/// * Remove use of `build.rs` making it easier to build `libloading` without cargo. It also almost
+///   halves the build time of this crate.
 pub mod r0_6_4 {}
 
 /// Release 0.6.3 (2020-08-22)
@@ -313,8 +312,8 @@ pub mod r0_6_1 {}
 ///
 /// * Introduced a new method [`os::unix::Library::get_singlethreaded`];
 /// * Added (untested) support for building when targeting Redox and Fuchsia;
-/// * The APIs exposed by this library no longer panic and instead return an `Err` when it used
-///   to panic.
+/// * The APIs exposed by this library no longer panic and instead return an `Err` when it used to
+///   panic.
 ///
 /// ## Breaking changes
 ///
@@ -323,10 +322,10 @@ pub mod r0_6_1 {}
 ///   than returning the `std::io::Error`;
 /// * `libloading::Result` has been removed;
 /// * Removed the dependency on the C compiler to build this library on UNIX-like platforms.
-///   `libloading` used to utilize a snippet written in C to work-around the unlikely possibility
-///   of the target having a thread-unsafe implementation of the `dlerror` function. The effect of
-///   the work-around was very opportunistic: it would not work if the function was called by
-///   forgoing `libloading`.
+///   `libloading` used to utilize a snippet written in C to work-around the unlikely possibility of
+///   the target having a thread-unsafe implementation of the `dlerror` function. The effect of the
+///   work-around was very opportunistic: it would not work if the function was called by forgoing
+///   `libloading`.
 ///
 ///   Starting with 0.6.0, [`Library::get`] on platforms where `dlerror` is not MT-safe (such as
 ///   FreeBSD, DragonflyBSD or NetBSD) will unconditionally return an error when the underlying
@@ -384,8 +383,8 @@ pub mod r0_4_1 {}
 ///
 /// * Remove build-time dependency on target_build_utils (and by extension serde/phf);
 /// * Require at least version 1.14.0 of rustc to build;
-///   * Actually, it is cargo which has to be more recent here. The one shipped with rustc 1.14.0
-///     is what’s being required from now on.
+///   * Actually, it is cargo which has to be more recent here. The one shipped with rustc 1.14.0 is
+///     what’s being required from now on.
 pub mod r0_4_0 {}
 
 /// Release 0.3.4 (2017-03-25)
@@ -395,8 +394,8 @@ pub mod r0_3_4 {}
 
 /// Release 0.3.3 (2017-03-25)
 ///
-/// * Panics when `Library::get` is called for incompatibly sized type such as named function
-///   types (which are zero-sized).
+/// * Panics when `Library::get` is called for incompatibly sized type such as named function types
+///   (which are zero-sized).
 pub mod r0_3_3 {}
 
 /// Release 0.3.2 (2017-02-10)
